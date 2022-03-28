@@ -28,14 +28,14 @@ deploying our nginx app in a pod inside worker node and set up ingress to allow 
 
 ## What I have done
 Created and pushed docker image   
-Done it by using commmited files and commands:
-	docker build -t my-nginx .
-	docker tag my-nginx rafibz007/my-nginx
-	docker push rafibz007/my-nginx
+Done it by using commmited files and commands:<br>
+	- docker build -t my-nginx .  	<br>
+	- docker tag my-nginx rafibz007/my-nginx  	<br>
+	- docker push rafibz007/my-nginx  	<br>
 
 After running:
-	docker run -d -p 8080:80 rafibz007/my-nginx   
-hello world page can be seen at localhost:8080
+	docker run -d -p 8080:80 rafibz007/my-nginx     	<br>
+hello world page can be seen at localhost:8080 
 
 <br>
 

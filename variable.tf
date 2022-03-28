@@ -9,12 +9,12 @@ variable "nginx_port" {
     description = "Port number on which hosted application will be available"
     type = number
 
-    default = 6969
+    default = 8080
 }
 
 variable "nginx_url" {
     description = "URL on which hosted application will be available"
     type = string
 
-    default = "localhost"
+    default = "localhost.xyz"
 }

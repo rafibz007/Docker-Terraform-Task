@@ -1,0 +1,90 @@
+terraform {
+    required_providers {
+        docker = {
+            source = "kreuzwerker/docker"
+            version = "~> 2.15.0"
+        }
+    }
+    
+}
+
+provider "docker" {}
+
+resource "docker_network" "nginx" {
+  name   = "docknet"
+  driver = "bridge"
+}
+
+resource "docker_image" "traefik" {
+  name = "traefik:2.6"
+}
+
+resource "docker_container" "traefik" {
+  name  = "traefik"
+  image = docker_image.traefik.name
+
+  networks_advanced {
+    name    = docker_network.nginx.name
+    aliases = ["docknet"]
+  }
+
+  command = [
+    # "--log.level=DEBUG",
+    "--api.insecure=true",
+    "--providers.docker=true",
+    "--providers.docker.exposedbydefault=false",
+    "--entrypoints.web.address=:80"
+  ]
+
+
+  ports {
+    internal = 80
+    external = 80
+  }
+
+  ports {
+    internal = 8080
+    external = 8080
+  }
+
+}
+
+
+resource "docker_image" "nginx" {
+    name = var.nginx_docker_image
+}
+
+resource "docker_container" "nginx" {
+    image = docker_image.nginx.name
+    name = "my-nginx"
+    ports {
+        internal = 80
+        external = var.nginx_port
+    }
+
+    networks_advanced {
+        name    = docker_network.nginx.name
+        aliases = ["docknet"]
+    }
+
+    labels {
+        label = "traefik.http.routers.nginx.rule"
+        value = "Host(`whoami.localhost`)"
+    }
+
+    labels {
+        label = "traefik.enable"
+        value = true
+    }
+
+    labels {
+        label = "traefik.http.routers.whoami.entrypoints"
+        value = "web"
+    }
+
+    labels {
+        label = "traefik.docker.network"
+        value = "docknet"
+    }
+
+}
